@@ -1,0 +1,1618 @@
+{
+ "Resources": {
+  "TodoApiStack9F95558C": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Name": "TodoApiStack"
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/TodoApiStack/Resource"
+   }
+  },
+  "TodoApiStackDeploymentB2159BB399cd3348e657e4a1031310c3440063cb": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "RestApiId": {
+     "Ref": "TodoApiStack9F95558C"
+    },
+    "Description": "Automatically created by the RestApi construct"
+   },
+   "DependsOn": [
+    "TodoApiStackdevdevtodopostbodyvalidator491D7D83",
+    "TodoApiStackdevdevtodopostmodelvalidator588B7F97",
+    "TodoApiStackdevdevtodoputbodyvalidatorC6985FA1",
+    "TodoApiStackdevdevtodoputmodelvalidatorC26FCAC1",
+    "TodoApiStacktodosidDELETE2AC787ED",
+    "TodoApiStacktodosidGET2F8DF2A4",
+    "TodoApiStacktodosidA4963859",
+    "TodoApiStacktodosGETDF91DE5A",
+    "TodoApiStacktodosPOSTBB32C7A7",
+    "TodoApiStacktodosPUTB25FA68F",
+    "TodoApiStacktodosA901EC95"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/TodoApiStack/Deployment/Resource"
+   }
+  },
+  "TodoApiStackDeploymentStageprodC68599EC": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "RestApiId": {
+     "Ref": "TodoApiStack9F95558C"
+    },
+    "DeploymentId": {
+     "Ref": "TodoApiStackDeploymentB2159BB399cd3348e657e4a1031310c3440063cb"
+    },
+    "StageName": "prod"
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/TodoApiStack/DeploymentStage.prod/Resource"
+   }
+  },
+  "TodoApiStacktodosA901EC95": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "TodoApiStack9F95558C",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "todos",
+    "RestApiId": {
+     "Ref": "TodoApiStack9F95558C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/TodoApiStack/Default/todos/Resource"
+   }
+  },
+  "TodoApiStacktodosidA4963859": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "TodoApiStacktodosA901EC95"
+    },
+    "PathPart": "{id}",
+    "RestApiId": {
+     "Ref": "TodoApiStack9F95558C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/TodoApiStack/Default/todos/{id}/Resource"
+   }
+  },
+  "TodoApiStacktodosidGETApiPermissionTodoApiStack55728BF3GETtodosid542F2BEB": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "TodoApiStackdevdevtodoget02D1B4E4",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "TodoApiStack9F95558C"
+       },
+       "/",
+       {
+        "Ref": "TodoApiStackDeploymentStageprodC68599EC"
+       },
+       "/GET/todos/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/TodoApiStack/Default/todos/{id}/GET/ApiPermission.TodoApiStack55728BF3.GET..todos.{id}"
+   }
+  },
+  "TodoApiStacktodosidGETApiPermissionTestTodoApiStack55728BF3GETtodosidE9109AB3": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "TodoApiStackdevdevtodoget02D1B4E4",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "TodoApiStack9F95558C"
+       },
+       "/test-invoke-stage/GET/todos/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/TodoApiStack/Default/todos/{id}/GET/ApiPermission.Test.TodoApiStack55728BF3.GET..todos.{id}"
+   }
+  },
+  "TodoApiStacktodosidGET2F8DF2A4": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "GET",
+    "ResourceId": {
+     "Ref": "TodoApiStacktodosidA4963859"
+    },
+    "RestApiId": {
+     "Ref": "TodoApiStack9F95558C"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "TodoApiStackdevdevtodoget02D1B4E4",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/TodoApiStack/Default/todos/{id}/GET/Resource"
+   }
+  },
+  "TodoApiStacktodosidDELETEApiPermissionTodoApiStack55728BF3DELETEtodosid361E5AFD": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "TodoApiStackdevdevtododelete4579B5EC",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "TodoApiStack9F95558C"
+       },
+       "/",
+       {
+        "Ref": "TodoApiStackDeploymentStageprodC68599EC"
+       },
+       "/DELETE/todos/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/TodoApiStack/Default/todos/{id}/DELETE/ApiPermission.TodoApiStack55728BF3.DELETE..todos.{id}"
+   }
+  },
+  "TodoApiStacktodosidDELETEApiPermissionTestTodoApiStack55728BF3DELETEtodosid878F32A3": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "TodoApiStackdevdevtododelete4579B5EC",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "TodoApiStack9F95558C"
+       },
+       "/test-invoke-stage/DELETE/todos/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/TodoApiStack/Default/todos/{id}/DELETE/ApiPermission.Test.TodoApiStack55728BF3.DELETE..todos.{id}"
+   }
+  },
+  "TodoApiStacktodosidDELETE2AC787ED": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "DELETE",
+    "ResourceId": {
+     "Ref": "TodoApiStacktodosidA4963859"
+    },
+    "RestApiId": {
+     "Ref": "TodoApiStack9F95558C"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "TodoApiStackdevdevtododelete4579B5EC",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/TodoApiStack/Default/todos/{id}/DELETE/Resource"
+   }
+  },
+  "TodoApiStacktodosGETApiPermissionTodoApiStack55728BF3GETtodos31F2962D": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "TodoApiStackdevdevtodolist8A042F26",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "TodoApiStack9F95558C"
+       },
+       "/",
+       {
+        "Ref": "TodoApiStackDeploymentStageprodC68599EC"
+       },
+       "/GET/todos"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/TodoApiStack/Default/todos/GET/ApiPermission.TodoApiStack55728BF3.GET..todos"
+   }
+  },
+  "TodoApiStacktodosGETApiPermissionTestTodoApiStack55728BF3GETtodos2EE7BE02": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "TodoApiStackdevdevtodolist8A042F26",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "TodoApiStack9F95558C"
+       },
+       "/test-invoke-stage/GET/todos"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/TodoApiStack/Default/todos/GET/ApiPermission.Test.TodoApiStack55728BF3.GET..todos"
+   }
+  },
+  "TodoApiStacktodosGETDF91DE5A": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "GET",
+    "ResourceId": {
+     "Ref": "TodoApiStacktodosA901EC95"
+    },
+    "RestApiId": {
+     "Ref": "TodoApiStack9F95558C"
+    },
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "TodoApiStacktodoUserAuthorizerId732752C1"
+    },
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "TodoApiStackdevdevtodolist8A042F26",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/TodoApiStack/Default/todos/GET/Resource"
+   }
+  },
+  "TodoApiStacktodosPOSTApiPermissionTodoApiStack55728BF3POSTtodosFF18D8ED": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "TodoApiStackdevdevtodopost382984EB",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "TodoApiStack9F95558C"
+       },
+       "/",
+       {
+        "Ref": "TodoApiStackDeploymentStageprodC68599EC"
+       },
+       "/POST/todos"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/TodoApiStack/Default/todos/POST/ApiPermission.TodoApiStack55728BF3.POST..todos"
+   }
+  },
+  "TodoApiStacktodosPOSTApiPermissionTestTodoApiStack55728BF3POSTtodosC26BD815": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "TodoApiStackdevdevtodopost382984EB",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "TodoApiStack9F95558C"
+       },
+       "/test-invoke-stage/POST/todos"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/TodoApiStack/Default/todos/POST/ApiPermission.Test.TodoApiStack55728BF3.POST..todos"
+   }
+  },
+  "TodoApiStacktodosPOSTBB32C7A7": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "POST",
+    "ResourceId": {
+     "Ref": "TodoApiStacktodosA901EC95"
+    },
+    "RestApiId": {
+     "Ref": "TodoApiStack9F95558C"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "TodoApiStackdevdevtodopost382984EB",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestModels": {
+     "application/json": {
+      "Ref": "TodoApiStackdevdevtodopostmodelvalidator588B7F97"
+     }
+    },
+    "RequestValidatorId": {
+     "Ref": "TodoApiStackdevdevtodopostbodyvalidator491D7D83"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/TodoApiStack/Default/todos/POST/Resource"
+   }
+  },
+  "TodoApiStacktodosPUTApiPermissionTodoApiStack55728BF3PUTtodos932869C7": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "TodoApiStackdevdevtodoput99387C66",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "TodoApiStack9F95558C"
+       },
+       "/",
+       {
+        "Ref": "TodoApiStackDeploymentStageprodC68599EC"
+       },
+       "/PUT/todos"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/TodoApiStack/Default/todos/PUT/ApiPermission.TodoApiStack55728BF3.PUT..todos"
+   }
+  },
+  "TodoApiStacktodosPUTApiPermissionTestTodoApiStack55728BF3PUTtodos719406DB": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "TodoApiStackdevdevtodoput99387C66",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "TodoApiStack9F95558C"
+       },
+       "/test-invoke-stage/PUT/todos"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/TodoApiStack/Default/todos/PUT/ApiPermission.Test.TodoApiStack55728BF3.PUT..todos"
+   }
+  },
+  "TodoApiStacktodosPUTB25FA68F": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "PUT",
+    "ResourceId": {
+     "Ref": "TodoApiStacktodosA901EC95"
+    },
+    "RestApiId": {
+     "Ref": "TodoApiStack9F95558C"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "TodoApiStackdevdevtodoput99387C66",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestModels": {
+     "application/json": {
+      "Ref": "TodoApiStackdevdevtodoputmodelvalidatorC26FCAC1"
+     }
+    },
+    "RequestValidatorId": {
+     "Ref": "TodoApiStackdevdevtodoputbodyvalidatorC6985FA1"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/TodoApiStack/Default/todos/PUT/Resource"
+   }
+  },
+  "TodoApiStacktodoUserAuthorizerId732752C1": {
+   "Type": "AWS::ApiGateway::Authorizer",
+   "Properties": {
+    "Name": "todoUserAuthorizer",
+    "RestApiId": {
+     "Ref": "TodoApiStack9F95558C"
+    },
+    "Type": "COGNITO_USER_POOLS",
+    "IdentitySource": "method.request.header.Authorization",
+    "ProviderARNs": [
+     {
+      "Fn::ImportValue": "TodoStatefulStack:ExportsOutputFnGetAtttodoCognitoIdtodoUserPoolId8A1F0AACArn3179ED15"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/todoUserAuthorizerId/Resource"
+   }
+  },
+  "TodoApiStackdevdevtodolistServiceRole1BBF69C9": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/dev-dev-todo-list/ServiceRole/Resource"
+   }
+  },
+  "TodoApiStackdevdevtodolistServiceRoleDefaultPolicyDFDA9C4A": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "dynamodb:*",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "TodoStatefulStack:ExportsOutputFnGetAttTodoDynamoDBTableTodo5AD38D5EArn44AE0E00"
+        },
+        {
+         "Ref": "AWS::NoValue"
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "TodoApiStackdevdevtodolistServiceRoleDefaultPolicyDFDA9C4A",
+    "Roles": [
+     {
+      "Ref": "TodoApiStackdevdevtodolistServiceRole1BBF69C9"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/dev-dev-todo-list/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "TodoApiStackdevdevtodolist8A042F26": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+     },
+     "S3Key": "c3436247815d49b105628017420733ff6d78fd5ba8d019dd99894939872b2d3b.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "TodoApiStackdevdevtodolistServiceRole1BBF69C9",
+      "Arn"
+     ]
+    },
+    "Environment": {
+     "Variables": {
+      "TODO_TABLE": {
+       "Fn::ImportValue": "TodoStatefulStack:ExportsOutputRefTodoDynamoDBTableTodo5AD38D5E5D3B3375"
+      },
+      "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+     }
+    },
+    "FunctionName": "dev-dev-todo-list",
+    "Handler": "index.handler",
+    "Runtime": "nodejs14.x"
+   },
+   "DependsOn": [
+    "TodoApiStackdevdevtodolistServiceRoleDefaultPolicyDFDA9C4A",
+    "TodoApiStackdevdevtodolistServiceRole1BBF69C9"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/dev-dev-todo-list/Resource",
+    "aws:asset:path": "asset.c3436247815d49b105628017420733ff6d78fd5ba8d019dd99894939872b2d3b",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "TodoApiStackdevdevtodogetServiceRoleA59DB525": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/dev-dev-todo-get/ServiceRole/Resource"
+   }
+  },
+  "TodoApiStackdevdevtodogetServiceRoleDefaultPolicyB44E2C72": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "dynamodb:*",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "TodoStatefulStack:ExportsOutputFnGetAttTodoDynamoDBTableTodo5AD38D5EArn44AE0E00"
+        },
+        {
+         "Ref": "AWS::NoValue"
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "TodoApiStackdevdevtodogetServiceRoleDefaultPolicyB44E2C72",
+    "Roles": [
+     {
+      "Ref": "TodoApiStackdevdevtodogetServiceRoleA59DB525"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/dev-dev-todo-get/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "TodoApiStackdevdevtodoget02D1B4E4": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+     },
+     "S3Key": "728a0d5b0abecb1d5859d3c4d24b1261180d04a6b10ef6c31b72d863d4592c2b.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "TodoApiStackdevdevtodogetServiceRoleA59DB525",
+      "Arn"
+     ]
+    },
+    "Environment": {
+     "Variables": {
+      "TODO_TABLE": {
+       "Fn::ImportValue": "TodoStatefulStack:ExportsOutputRefTodoDynamoDBTableTodo5AD38D5E5D3B3375"
+      },
+      "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+     }
+    },
+    "FunctionName": "dev-dev-todo-get",
+    "Handler": "index.handler",
+    "Runtime": "nodejs14.x"
+   },
+   "DependsOn": [
+    "TodoApiStackdevdevtodogetServiceRoleDefaultPolicyB44E2C72",
+    "TodoApiStackdevdevtodogetServiceRoleA59DB525"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/dev-dev-todo-get/Resource",
+    "aws:asset:path": "asset.728a0d5b0abecb1d5859d3c4d24b1261180d04a6b10ef6c31b72d863d4592c2b",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "TodoApiStackdevdevtodopostmodelvalidator588B7F97": {
+   "Type": "AWS::ApiGateway::Model",
+   "Properties": {
+    "RestApiId": {
+     "Ref": "TodoApiStack9F95558C"
+    },
+    "ContentType": "application/json",
+    "Description": "To validate the request body",
+    "Schema": {
+     "type": "object",
+     "required": [
+      "description"
+     ],
+     "properties": {
+      "description": {
+       "type": "string"
+      }
+     },
+     "$schema": "http://json-schema.org/draft-04/schema#"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/dev-dev-todo-post-model-validator/Resource"
+   }
+  },
+  "TodoApiStackdevdevtodopostbodyvalidator491D7D83": {
+   "Type": "AWS::ApiGateway::RequestValidator",
+   "Properties": {
+    "RestApiId": {
+     "Ref": "TodoApiStack9F95558C"
+    },
+    "ValidateRequestBody": true
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/dev-dev-todo-post-body-validator/Resource"
+   }
+  },
+  "TodoApiStackdevdevtodopostServiceRole6C81097B": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/dev-dev-todo-post/ServiceRole/Resource"
+   }
+  },
+  "TodoApiStackdevdevtodopostServiceRoleDefaultPolicyC965D2F5": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "dynamodb:*",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "TodoStatefulStack:ExportsOutputFnGetAttTodoDynamoDBTableTodo5AD38D5EArn44AE0E00"
+        },
+        {
+         "Ref": "AWS::NoValue"
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "TodoApiStackdevdevtodopostServiceRoleDefaultPolicyC965D2F5",
+    "Roles": [
+     {
+      "Ref": "TodoApiStackdevdevtodopostServiceRole6C81097B"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/dev-dev-todo-post/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "TodoApiStackdevdevtodopost382984EB": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+     },
+     "S3Key": "7d56031d8d10255c73d712c371d8405a753c2c469aa4ebca1d35eae64f36112f.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "TodoApiStackdevdevtodopostServiceRole6C81097B",
+      "Arn"
+     ]
+    },
+    "Environment": {
+     "Variables": {
+      "TODO_TABLE": {
+       "Fn::ImportValue": "TodoStatefulStack:ExportsOutputRefTodoDynamoDBTableTodo5AD38D5E5D3B3375"
+      },
+      "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+     }
+    },
+    "FunctionName": "dev-dev-todo-post",
+    "Handler": "index.handler",
+    "Runtime": "nodejs14.x"
+   },
+   "DependsOn": [
+    "TodoApiStackdevdevtodopostServiceRoleDefaultPolicyC965D2F5",
+    "TodoApiStackdevdevtodopostServiceRole6C81097B"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/dev-dev-todo-post/Resource",
+    "aws:asset:path": "asset.7d56031d8d10255c73d712c371d8405a753c2c469aa4ebca1d35eae64f36112f",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "TodoApiStackdevdevtodoputmodelvalidatorC26FCAC1": {
+   "Type": "AWS::ApiGateway::Model",
+   "Properties": {
+    "RestApiId": {
+     "Ref": "TodoApiStack9F95558C"
+    },
+    "ContentType": "application/json",
+    "Description": "To validate the request body",
+    "Schema": {
+     "type": "object",
+     "required": [
+      "description",
+      "id"
+     ],
+     "properties": {
+      "description": {
+       "type": "string"
+      },
+      "id": {
+       "type": "string"
+      }
+     },
+     "$schema": "http://json-schema.org/draft-04/schema#"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/dev-dev-todo-put-model-validator/Resource"
+   }
+  },
+  "TodoApiStackdevdevtodoputbodyvalidatorC6985FA1": {
+   "Type": "AWS::ApiGateway::RequestValidator",
+   "Properties": {
+    "RestApiId": {
+     "Ref": "TodoApiStack9F95558C"
+    },
+    "ValidateRequestBody": true
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/dev-dev-todo-put-body-validator/Resource"
+   }
+  },
+  "TodoApiStackdevdevtodoputServiceRole5748FA24": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/dev-dev-todo-put/ServiceRole/Resource"
+   }
+  },
+  "TodoApiStackdevdevtodoputServiceRoleDefaultPolicy869AC5B4": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "dynamodb:*",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "TodoStatefulStack:ExportsOutputFnGetAttTodoDynamoDBTableTodo5AD38D5EArn44AE0E00"
+        },
+        {
+         "Ref": "AWS::NoValue"
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "TodoApiStackdevdevtodoputServiceRoleDefaultPolicy869AC5B4",
+    "Roles": [
+     {
+      "Ref": "TodoApiStackdevdevtodoputServiceRole5748FA24"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/dev-dev-todo-put/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "TodoApiStackdevdevtodoput99387C66": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+     },
+     "S3Key": "aef1efcf82448e96ca87a0a2c3fc45fe0ebdf80811deb8fe5b2dc757ae8a4cc6.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "TodoApiStackdevdevtodoputServiceRole5748FA24",
+      "Arn"
+     ]
+    },
+    "Environment": {
+     "Variables": {
+      "TODO_TABLE": {
+       "Fn::ImportValue": "TodoStatefulStack:ExportsOutputRefTodoDynamoDBTableTodo5AD38D5E5D3B3375"
+      },
+      "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+     }
+    },
+    "FunctionName": "dev-dev-todo-put",
+    "Handler": "index.handler",
+    "Runtime": "nodejs14.x"
+   },
+   "DependsOn": [
+    "TodoApiStackdevdevtodoputServiceRoleDefaultPolicy869AC5B4",
+    "TodoApiStackdevdevtodoputServiceRole5748FA24"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/dev-dev-todo-put/Resource",
+    "aws:asset:path": "asset.aef1efcf82448e96ca87a0a2c3fc45fe0ebdf80811deb8fe5b2dc757ae8a4cc6",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "TodoApiStackdevdevtododeleteServiceRole670DCDB8": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/dev-dev-todo-delete/ServiceRole/Resource"
+   }
+  },
+  "TodoApiStackdevdevtododeleteServiceRoleDefaultPolicyE61AAAF1": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "dynamodb:*",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "TodoStatefulStack:ExportsOutputFnGetAttTodoDynamoDBTableTodo5AD38D5EArn44AE0E00"
+        },
+        {
+         "Ref": "AWS::NoValue"
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "TodoApiStackdevdevtododeleteServiceRoleDefaultPolicyE61AAAF1",
+    "Roles": [
+     {
+      "Ref": "TodoApiStackdevdevtododeleteServiceRole670DCDB8"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/dev-dev-todo-delete/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "TodoApiStackdevdevtododelete4579B5EC": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+     },
+     "S3Key": "c3df60c0a144145d48f9171a123c096e017ce5ca639e26e2144c1b10f8ae48a0.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "TodoApiStackdevdevtododeleteServiceRole670DCDB8",
+      "Arn"
+     ]
+    },
+    "Environment": {
+     "Variables": {
+      "TODO_TABLE": {
+       "Fn::ImportValue": "TodoStatefulStack:ExportsOutputRefTodoDynamoDBTableTodo5AD38D5E5D3B3375"
+      },
+      "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+     }
+    },
+    "FunctionName": "dev-dev-todo-delete",
+    "Handler": "index.handler",
+    "Runtime": "nodejs14.x"
+   },
+   "DependsOn": [
+    "TodoApiStackdevdevtododeleteServiceRoleDefaultPolicyE61AAAF1",
+    "TodoApiStackdevdevtododeleteServiceRole670DCDB8"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/TodoApiStack/dev-dev-todo-delete/Resource",
+    "aws:asset:path": "asset.c3df60c0a144145d48f9171a123c096e017ce5ca639e26e2144c1b10f8ae48a0",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1VRwU7DMAz9Fu5dUIeQuG5D3AZVEVynrDWd2zQuscM0qv07SUO17eT3nl8c52WpHnOV3+kjL6q6Wxjcq/FddNVlQdqNesBGCxz1SY0lsKwGzDZfdobPMBg69WAlqlcsjGggagkEP3lXwVrzhfwPSngLcqA6SjOixqLQB4MriAyvfJAd/oKLpiu2pRrMdHACJXz7sN2nNlhrIZduudXOmdH9vtZqDM0CXI/MSDZaX7ytJODZsrNhasvqdSpzN0Pdh0DIpEfEWpDB6hRpQueMH3aaGYTVKpbA1dpXHUhM4Rydb14GL5dAJl9MDG1zk07AG7I1ps3iSqrl+5/8SeXL8HstIy6ct4I9qDLVPxHeiL3ZAQAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "TodoApiStack/CDKMetadata/Default"
+   },
+   "Condition": "CDKMetadataAvailable"
+  }
+ },
+ "Outputs": {
+  "TodoApiStackEndpointDEDF8D25": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "TodoApiStack9F95558C"
+      },
+      ".execute-api.",
+      {
+       "Ref": "AWS::Region"
+      },
+      ".",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "TodoApiStackDeploymentStageprodC68599EC"
+      },
+      "/"
+     ]
+    ]
+   }
+  }
+ },
+ "Conditions": {
+  "CDKMetadataAvailable": {
+   "Fn::Or": [
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "af-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-northwest-1"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "sa-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-2"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-west-2"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

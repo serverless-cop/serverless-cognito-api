@@ -1,6 +1,7 @@
 import {
+    AuthorizationType,
+    CognitoUserPoolsAuthorizer,
     JsonSchema,
-    JsonSchemaType,
     LambdaIntegration,
     Model,
     RequestValidator,
@@ -12,6 +13,8 @@ import config from "../../config/config";
 import * as cdk from "aws-cdk-lib";
 import {Construct} from "constructs";
 import {Resource} from "aws-cdk-lib/aws-apigateway/lib/resource";
+import {UserPool} from "aws-cdk-lib/aws-cognito";
+import {Authorizer} from "aws-cdk-lib/aws-apigateway/lib/authorizer";
 
 export interface Methodprops {
     functionName: string
@@ -21,6 +24,15 @@ export interface Methodprops {
     environment: any
     bodySchema?: JsonSchema
     validateRequestBody: boolean
+    authorizationType?: AuthorizationType
+    authorizer?: Authorizer
+}
+
+export interface AuthorizerProps {
+    id: string
+    authorizerName: string
+    identitySource: string
+    cognitoUserPools: [UserPool]
 }
 
 export abstract class GenericApi extends Construct {
@@ -40,6 +52,14 @@ export abstract class GenericApi extends Construct {
     protected addMethod(props: Methodprops): NodejsFunction{
         const apiId = config.account + '-' + config.env + '-' + props.functionName
         let options: any = {}
+
+        if(props.authorizationType && props.authorizer){
+            options.authorizationType = props.authorizationType
+            options.authorizer = {
+                authorizerId: props.authorizer.authorizerId
+            }
+        }
+
         if(props.validateRequestBody && props.bodySchema){
             this.model = new Model(this, apiId + '-model-validator',
                 {

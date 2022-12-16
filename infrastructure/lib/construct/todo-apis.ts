@@ -1,15 +1,18 @@
 import {Construct} from "constructs";
 import {GenericDynamoTable} from "../generic/GenericDynamoTable";
-import {GenericApi} from "../generic/GenericApi";
+import {AuthorizerProps, GenericApi} from "../generic/GenericApi";
 import {NodejsFunction} from "aws-cdk-lib/aws-lambda-nodejs";
 import {createTodoSchema, editTodoSchema} from "./todo-schema";
+import {TodoCognito} from "./todo-cognito";
+import {CognitoUserPoolsAuthorizer} from "aws-cdk-lib/aws-apigateway";
+import {AuthorizationType} from "@aws-cdk/aws-apigateway";
 
 export interface TodoApiProps {
     todoTable: GenericDynamoTable
+    cognito: TodoCognito
 }
 
 export class TodoApis extends GenericApi {
-    private props: TodoApiProps
     private listApi: NodejsFunction
     private getApi: NodejsFunction
     private createApi: NodejsFunction
@@ -18,17 +21,17 @@ export class TodoApis extends GenericApi {
 
     public constructor(scope: Construct, id: string, props: TodoApiProps) {
         super(scope, id)
-        this.props = props
-        this.addApis();
-
-        this.props.todoTable.table.grantFullAccess(this.listApi.grantPrincipal)
-        this.props.todoTable.table.grantFullAccess(this.getApi.grantPrincipal)
-        this.props.todoTable.table.grantFullAccess(this.createApi.grantPrincipal)
-        this.props.todoTable.table.grantFullAccess(this.editApi.grantPrincipal)
-        this.props.todoTable.table.grantFullAccess(this.deleteApi.grantPrincipal)
+        this.initializeApis(props);
     }
 
-    private addApis(){
+    private initializeApis(props: TodoApiProps){
+        const authorizer = this.createAuthorizer({
+            id: 'todoUserAuthorizerId',
+            authorizerName: 'todoUserAuthorizer',
+            identitySource: 'method.request.header.Authorization',
+            cognitoUserPools: [props.cognito.userPool]
+        })
+
         const todosApiResource = this.api.root.addResource('todos')
         const todoIdResource = todosApiResource.addResource('{id}')
 
@@ -38,9 +41,11 @@ export class TodoApis extends GenericApi {
             verb: 'GET',
             resource: todosApiResource,
             environment: {
-                TODO_TABLE: this.props.todoTable.table.tableName
+                TODO_TABLE: props.todoTable.table.tableName
             },
             validateRequestBody: false,
+            authorizationType: AuthorizationType.COGNITO,
+            authorizer: authorizer
         })
 
         this.getApi = this.addMethod({
@@ -49,7 +54,7 @@ export class TodoApis extends GenericApi {
             verb: 'GET',
             resource: todoIdResource,
             environment: {
-                TODO_TABLE: this.props.todoTable.table.tableName
+                TODO_TABLE: props.todoTable.table.tableName
             },
             validateRequestBody: false,
         })
@@ -60,7 +65,7 @@ export class TodoApis extends GenericApi {
             verb: 'POST',
             resource: todosApiResource,
             environment: {
-                TODO_TABLE: this.props.todoTable.table.tableName
+                TODO_TABLE: props.todoTable.table.tableName
             },
             validateRequestBody: true,
             bodySchema: createTodoSchema
@@ -72,7 +77,7 @@ export class TodoApis extends GenericApi {
             verb: 'PUT',
             resource: todosApiResource,
             environment: {
-                TODO_TABLE: this.props.todoTable.table.tableName
+                TODO_TABLE: props.todoTable.table.tableName
             },
             validateRequestBody: true,
             bodySchema: editTodoSchema
@@ -84,10 +89,29 @@ export class TodoApis extends GenericApi {
             verb: 'DELETE',
             resource: todoIdResource,
             environment: {
-                TODO_TABLE: this.props.todoTable.table.tableName
+                TODO_TABLE: props.todoTable.table.tableName
             },
             validateRequestBody: false
         })
+
+        props.todoTable.table.grantFullAccess(this.listApi.grantPrincipal)
+        props.todoTable.table.grantFullAccess(this.getApi.grantPrincipal)
+        props.todoTable.table.grantFullAccess(this.createApi.grantPrincipal)
+        props.todoTable.table.grantFullAccess(this.editApi.grantPrincipal)
+        props.todoTable.table.grantFullAccess(this.deleteApi.grantPrincipal)
+    }
+
+    protected createAuthorizer(props: AuthorizerProps): CognitoUserPoolsAuthorizer{
+        const authorizer = new CognitoUserPoolsAuthorizer(
+            this,
+            props.id,
+            {
+                cognitoUserPools: props.cognitoUserPools,
+                authorizerName: props.authorizerName,
+                identitySource: props.identitySource
+            });
+        authorizer._attachToApi(this.api)
+        return authorizer
     }
 
 }

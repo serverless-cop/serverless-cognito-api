@@ -1,4 +1,4 @@
-import {Stack, StackProps} from "aws-cdk-lib";
+import {RemovalPolicy, Stack, StackProps} from "aws-cdk-lib";
 import {AttributeType, Table} from "aws-cdk-lib/aws-dynamodb";
 import {Effect, IGrantable, PolicyStatement} from "aws-cdk-lib/aws-iam";
 import {Construct} from "constructs";
@@ -20,7 +20,8 @@ export class GenericDynamoTable extends Construct {
         this.props = props
 
 
-        this.table = new Table(this, this.props.tableName, {
+        this.table = new Table(this, id, {
+            removalPolicy: RemovalPolicy.DESTROY,
             partitionKey: {
                 name: this.props.primaryKey,
                 type: AttributeType.STRING

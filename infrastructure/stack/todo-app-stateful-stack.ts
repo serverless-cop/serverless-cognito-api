@@ -1,6 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import {CfnOutput, Fn, Stack} from "aws-cdk-lib";
+import {CfnOutput, Fn, RemovalPolicy, Stack} from "aws-cdk-lib";
 import {Bucket, HttpMethods} from "aws-cdk-lib/aws-s3";
 import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 import {GenericDynamoTable} from "../lib/generic/GenericDynamoTable";
@@ -31,13 +31,14 @@ export class TodoAppStatefulStack extends Stack {
 
     private initializeTodosTable() {
         this.todoTable = new GenericDynamoTable(this, 'TodoDynamoDBTable', {
-            tableName: 'Todo',
+            tableName: 'Todo-' + this.suffix,
             primaryKey: 'id'
         })
     }
 
     private initializeTodosPhotosBucket() {
         this.todosPhotoBucket = new Bucket(this, 'todo-photos', {
+            removalPolicy: RemovalPolicy.DESTROY,
             bucketName: 'todo-photos-' + this.suffix,
             cors: [{
                 allowedMethods: [
@@ -66,7 +67,9 @@ export class TodoAppStatefulStack extends Stack {
     }
 
     private initializeCognito() {
-        this.cognito = new TodoCognito(this,'todoCognitoId', {})
+        this.cognito = new TodoCognito(this,'todoCognitoId', {
+            suffixId: this.suffix
+        })
         this.cognito.addToAuthenticatedRole(this.uploadTodoPhotosPolicy)
         this.cognito.addToAdminRole(this.uploadTodoPhotosPolicy)
     }

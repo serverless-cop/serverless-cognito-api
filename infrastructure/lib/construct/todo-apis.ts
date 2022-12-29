@@ -22,6 +22,13 @@ export class TodoApis extends GenericApi {
     public constructor(scope: Construct, id: string, props: TodoApiProps) {
         super(scope, id)
         this.initializeApis(props);
+        this.initializeDomainName({
+            certificateArn: 'arn:aws:acm:us-east-1:057260886102:certificate/685e279a-55a8-4ae5-a1f0-f22732c421b3',
+            subdomain: 'api',
+            domainNameId: 'domainNameId',
+            rootDomain: 'app.orbitstellar.com',
+            ARecordId: 'ARecordId'
+        })
     }
 
     private initializeApis(props: TodoApiProps){

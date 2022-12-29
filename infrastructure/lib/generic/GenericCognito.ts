@@ -7,7 +7,7 @@ import {
     UserPool,
     UserPoolClient
 } from "aws-cdk-lib/aws-cognito";
-import {CfnOutput} from "aws-cdk-lib";
+import {CfnOutput, RemovalPolicy} from "aws-cdk-lib";
 import {CognitoUserPoolsAuthorizer} from "aws-cdk-lib/aws-apigateway";
 import {FederatedPrincipal, Role} from "aws-cdk-lib/aws-iam";
 import {PolicyStatement} from "aws-cdk-lib/aws-iam/lib/policy-statement";
@@ -59,6 +59,7 @@ export class GenericCognito extends Construct{
             this,
             props.id,
             {
+            removalPolicy: RemovalPolicy.DESTROY,
             userPoolName: props.userPoolName,
             selfSignUpEnabled: props.selfSignUpEnabled,
             signInAliases: {

@@ -5,7 +5,8 @@ import {
     LambdaIntegration,
     Model,
     RequestValidator,
-    RestApi
+    RestApi,
+    DomainName, BasePathMapping,
 } from "aws-cdk-lib/aws-apigateway";
 import {NodejsFunction} from "aws-cdk-lib/aws-lambda-nodejs";
 import {join} from "path";
@@ -15,6 +16,9 @@ import {Construct} from "constructs";
 import {Resource} from "aws-cdk-lib/aws-apigateway/lib/resource";
 import {UserPool} from "aws-cdk-lib/aws-cognito";
 import {Authorizer} from "aws-cdk-lib/aws-apigateway/lib/authorizer";
+import {Certificate} from "aws-cdk-lib/aws-certificatemanager";
+import {ARecord, HostedZone, RecordTarget} from "aws-cdk-lib/aws-route53";
+import {ApiGateway} from "aws-cdk-lib/aws-route53-targets";
 
 export interface Methodprops {
     functionName: string
@@ -47,6 +51,26 @@ export abstract class GenericApi extends Construct {
     protected constructor(scope: Construct, id: string, props?: cdk.StackProps){
         super(scope, id);
         this.api = new RestApi(this, id)
+    }
+
+    protected initializeDomainName(props: any){
+        const cert = Certificate.fromCertificateArn(this,
+            'certificateId',
+            props.certificateArn);
+        this.api.addDomainName(props.domainNameId, {
+            domainName: [props.subdomain, props.rootDomain].join('.'),
+            certificate: cert
+        });
+        this.api.root.addMethod('ANY');
+
+        const hostedZone = HostedZone.fromLookup(this, 'HostedZone', {
+            domainName: props.rootDomain
+        });
+        new ARecord(this, props.ARecordId, {
+            zone: hostedZone,
+            recordName: props.subdomain,
+            target: RecordTarget.fromAlias(new ApiGateway(this.api)),
+        });
     }
 
     protected addMethod(props: Methodprops): NodejsFunction{

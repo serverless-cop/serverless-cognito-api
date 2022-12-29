@@ -7,20 +7,22 @@ import {GenericCognito} from "../generic/GenericCognito";
 import {UserPool} from "aws-cdk-lib/aws-cognito";
 
 export interface TodoCognitoProps {
-
+    suffixId: string
 }
 
 export class TodoCognito extends GenericCognito {
+    suffixId: string
 
-    public constructor(scope: Construct, id: string, props?: TodoCognitoProps) {
+    public constructor(scope: Construct, id: string, props: TodoCognitoProps) {
         super(scope, id, props)
+        this.suffixId = props.suffixId
         this.initializeCognito()
     }
 
     public initializeCognito(){
         this.createUserPool({
             id: 'todoUserPoolId',
-            userPoolName: 'todoUserPool',
+            userPoolName: 'todoUserPool-' + this.suffixId,
             selfSignUpEnabled: true,
             emailSignInAliases: true,
             userNameSignInAliases: true,

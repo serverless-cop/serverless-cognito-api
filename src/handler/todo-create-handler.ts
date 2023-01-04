@@ -3,7 +3,7 @@ import {
     APIGatewayProxyResult,
     APIGatewayProxyEvent
 } from 'aws-lambda';
-import {getEventBody, getPathParameter} from "../lib/utils";
+import {getEventBody, getPathParameter, getSub} from "../lib/utils";
 import {Env} from "../lib/env";
 import {TodoService} from "../service/TodoService";
 import {TodoCreateParams} from "../service/types";
@@ -26,6 +26,8 @@ export async function handler(event: APIGatewayProxyEvent, context: Context):
     }
     try {
         const item = getEventBody(event) as TodoCreateParams;
+        const sub = getSub(event)
+        item.userId = sub
         const todo = await todoService.create(item)
         result.body = JSON.stringify(todo)
     } catch (error) {

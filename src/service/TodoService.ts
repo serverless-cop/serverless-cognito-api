@@ -16,11 +16,13 @@ export class TodoService {
         this.props = props
     }
 
-    async list(): Promise<TodoEntity[]> {
-
+    async list(userId: string): Promise<TodoEntity[]> {
         const response = await this.documentClient
-            .scan({
+            .query({
                 TableName: this.props.table,
+                IndexName: 'userIdIndex',
+                KeyConditionExpression: 'userId = :userId',
+                ExpressionAttributeValues : {':userId' : userId}
             }).promise()
         if (response.Items === undefined) {
             return [] as TodoEntity[]
@@ -29,15 +31,15 @@ export class TodoService {
     }
 
     async get(params: TodoGetParams): Promise<TodoEntity> {
-        const id = params.id
         const response = await this.documentClient
             .get({
                 TableName: this.props.table,
                 Key: {
-                    id: id,
+                    id: params.id,
                 },
             }).promise()
-        if (response.Item === undefined) {
+        if (response.Item === undefined ||
+            response.Item.userId != params.userId) {
             return {} as TodoEntity
         }
         return response.Item as TodoEntity
@@ -61,6 +63,8 @@ export class TodoService {
             .put({
                 TableName: this.props.table,
                 Item: params,
+                ConditionExpression: 'userId = :userId',
+                ExpressionAttributeValues : {':userId' : params.userId}
             }).promise()
         return params
     }
@@ -70,8 +74,10 @@ export class TodoService {
             .delete({
                 TableName: this.props.table,
                 Key: {
-                    id: params.id
+                    id: params.id,
                 },
+                ConditionExpression: 'userId = :userId',
+                ExpressionAttributeValues : {':userId' : params.userId}
             }).promise()
     }
 

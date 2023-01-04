@@ -1,10 +1,11 @@
 import * as cdk from 'aws-cdk-lib';
-import { Construct } from 'constructs';
-import {CfnOutput, Fn, RemovalPolicy, Stack} from "aws-cdk-lib";
+import {CfnOutput, Fn, RemovalPolicy, Stack} from 'aws-cdk-lib';
+import {Construct} from 'constructs';
 import {Bucket, HttpMethods} from "aws-cdk-lib/aws-s3";
 import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 import {GenericDynamoTable} from "../lib/generic/GenericDynamoTable";
 import {TodoCognito} from "../lib/construct/todo-cognito";
+import {AttributeType} from "aws-cdk-lib/aws-dynamodb";
 
 
 export class TodoAppStatefulStack extends Stack {
@@ -32,7 +33,13 @@ export class TodoAppStatefulStack extends Stack {
     private initializeTodosTable() {
         this.todoTable = new GenericDynamoTable(this, 'TodoDynamoDBTable', {
             tableName: 'Todo-' + this.suffix,
-            primaryKey: 'id'
+            primaryKey: 'id',
+            keyType: AttributeType.STRING
+        })
+        this.todoTable.addSecondaryIndexes({
+            indexName: 'userIdIndex',
+            partitionKeyName: 'userId',
+            keyType: AttributeType.STRING
         })
     }
 

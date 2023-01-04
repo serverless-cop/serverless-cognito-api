@@ -5,7 +5,7 @@ import {
 } from 'aws-lambda';
 import {Env} from "../lib/env";
 import {TodoService} from "../service/TodoService";
-import {getEventBody, getPathParameter} from "../lib/utils";
+import {getEventBody, getPathParameter, getSub} from "../lib/utils";
 import {TodoCreateParams, TodoDeleteParams} from "../service/types";
 
 const table = Env.get('TODO_TABLE')
@@ -26,8 +26,10 @@ export async function handler(event: APIGatewayProxyEvent, context: Context):
     }
     try {
         const id = getPathParameter(event, 'id')
+        const sub = getSub(event)
         const todo = await todoService.delete({
-            id: id
+            id: id,
+            userId: sub,
         })
         result.body = JSON.stringify(todo)
     } catch (error) {

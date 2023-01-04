@@ -1,12 +1,32 @@
 import {APIGatewayProxyEvent, APIGatewayProxyResult} from "aws-lambda";
 import {ExternalError} from "../error";
+import jwt_decode from "jwt-decode"
 
 export function generateRandomId(): string {
-    return Math.random().toString(36).slice(2);
+    return Math.random().toString(36).slice(2)
 }
 
 export function getEventBody(event: APIGatewayProxyEvent) {
-    return typeof event.body == 'object' ? event.body : JSON.parse(event.body);
+    return typeof event.body == 'object' ? event.body : JSON.parse(event.body)
+}
+
+export function getEventHeaders(event: APIGatewayProxyEvent): any {
+    return typeof event.headers == 'object' ? event.headers : JSON.parse(event.headers)
+}
+
+export function getSub(event: APIGatewayProxyEvent): string {
+    const headers = typeof event.headers == 'object' ? event.headers : JSON.parse(event.headers)
+    let jwt = ''
+    if(headers['Authorization']){
+        const authorizationHeader: string = headers['Authorization']
+        const stringArr = authorizationHeader.split(' ')
+        if(stringArr[0] === 'Bearer' || stringArr[0] === 'bearer')
+            jwt = stringArr[1]
+        else
+            jwt = stringArr[0]
+    }
+    let decoded: any = jwt_decode(jwt)
+    return decoded.sub ? decoded.sub : ''
 }
 
 export function  getPathParameter(event: APIGatewayProxyEvent, parameter: string) {

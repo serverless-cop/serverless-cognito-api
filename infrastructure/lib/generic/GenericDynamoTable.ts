@@ -7,7 +7,13 @@ import config from "../../config/config";
 export interface GenericTableProps {
     tableName: string
     primaryKey: string
-    secondaryIndexes?: string[]
+    keyType: AttributeType
+}
+
+export interface SecondaryIndexProp {
+    indexName: string
+    partitionKeyName: string
+    keyType: AttributeType
 }
 
 export class GenericDynamoTable extends Construct {
@@ -19,7 +25,6 @@ export class GenericDynamoTable extends Construct {
         super(scope, id)
         this.props = props
 
-
         this.table = new Table(this, id, {
             removalPolicy: RemovalPolicy.DESTROY,
             partitionKey: {
@@ -30,17 +35,15 @@ export class GenericDynamoTable extends Construct {
         })
     }
 
-    private addSecondaryIndexes(){
-        if (this.props.secondaryIndexes) {
-            for (const secondaryIndex of this.props.secondaryIndexes) {
-                this.table.addGlobalSecondaryIndex({
-                    indexName: secondaryIndex,
-                    partitionKey: {
-                        name: secondaryIndex,
-                        type: AttributeType.STRING
-                    }
-                })
-            }
+    public addSecondaryIndexes(options: SecondaryIndexProp){
+        if (options) {
+            this.table.addGlobalSecondaryIndex({
+                indexName: options.indexName,
+                partitionKey: {
+                    name: options.partitionKeyName,
+                    type: options.keyType
+                }
+            })
         }
     }
 

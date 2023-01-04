@@ -5,7 +5,7 @@ import {
 } from 'aws-lambda';
 import {Env} from "../lib/env";
 import {TodoService} from "../service/TodoService";
-import {getPathParameter, getQueryString} from "../lib/utils";
+import {getPathParameter, getQueryString, getSub} from "../lib/utils";
 
 const table = Env.get('TODO_TABLE')
 const todoService = new TodoService({
@@ -25,8 +25,10 @@ export async function handler(event: APIGatewayProxyEvent, context: Context):
         body: ''
     }
     const id = getPathParameter(event, 'id')
+    const sub = getSub(event)
     const todo = await todoService.get({
-        id: id
+        id: id,
+        userId: sub
     })
 
     result.body = JSON.stringify(todo)

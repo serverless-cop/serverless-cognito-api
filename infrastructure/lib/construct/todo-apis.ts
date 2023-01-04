@@ -64,6 +64,8 @@ export class TodoApis extends GenericApi {
                 TODO_TABLE: props.todoTable.table.tableName
             },
             validateRequestBody: false,
+            authorizationType: AuthorizationType.COGNITO,
+            authorizer: authorizer
         })
 
         this.createApi = this.addMethod({
@@ -75,7 +77,9 @@ export class TodoApis extends GenericApi {
                 TODO_TABLE: props.todoTable.table.tableName
             },
             validateRequestBody: true,
-            bodySchema: createTodoSchema
+            bodySchema: createTodoSchema,
+            authorizationType: AuthorizationType.COGNITO,
+            authorizer: authorizer
         })
 
         this.editApi = this.addMethod({
@@ -87,7 +91,9 @@ export class TodoApis extends GenericApi {
                 TODO_TABLE: props.todoTable.table.tableName
             },
             validateRequestBody: true,
-            bodySchema: editTodoSchema
+            bodySchema: editTodoSchema,
+            authorizationType: AuthorizationType.COGNITO,
+            authorizer: authorizer
         })
 
         this.deleteApi = this.addMethod({
@@ -98,7 +104,9 @@ export class TodoApis extends GenericApi {
             environment: {
                 TODO_TABLE: props.todoTable.table.tableName
             },
-            validateRequestBody: false
+            validateRequestBody: false,
+            authorizationType: AuthorizationType.COGNITO,
+            authorizer: authorizer
         })
 
         props.todoTable.table.grantFullAccess(this.listApi.grantPrincipal)

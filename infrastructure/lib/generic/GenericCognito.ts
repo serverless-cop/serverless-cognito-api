@@ -5,12 +5,16 @@ import {
     CfnIdentityPoolRoleAttachment,
     CfnUserPoolGroup,
     UserPool,
-    UserPoolClient
+    UserPoolClient, UserPoolEmail, VerificationEmailStyle
 } from "aws-cdk-lib/aws-cognito";
 import {CfnOutput, RemovalPolicy} from "aws-cdk-lib";
 import {CognitoUserPoolsAuthorizer} from "aws-cdk-lib/aws-apigateway";
 import {FederatedPrincipal, Role} from "aws-cdk-lib/aws-iam";
 import {PolicyStatement} from "aws-cdk-lib/aws-iam/lib/policy-statement";
+import {Certificate} from "aws-cdk-lib/aws-certificatemanager";
+import {ARecord, HostedZone, RecordTarget} from "aws-cdk-lib/aws-route53";
+import {ApiGateway} from "aws-cdk-lib/aws-route53-targets";
+import {UserPoolDomainTarget} from "aws-cdk-lib/aws-route53-targets/lib/userpool-domain";
 
 export interface UserPoolProps {
     id: string
@@ -19,6 +23,8 @@ export interface UserPoolProps {
     emailSignInAliases: boolean
     userNameSignInAliases: boolean
     phoneSignInAliases: boolean
+    certificateArn: string
+    customDomainName: string
 }
 
 export interface UserPoolClientProps {
@@ -62,12 +68,59 @@ export class GenericCognito extends Construct{
             removalPolicy: RemovalPolicy.DESTROY,
             userPoolName: props.userPoolName,
             selfSignUpEnabled: props.selfSignUpEnabled,
+            email: UserPoolEmail.withCognito('support@myawesomeapp.com'),
+            userVerification: {
+                emailSubject: 'Verify your email for our awesome app!',
+                emailBody: 'Thanks for signing up to our awesome app! Your verification code is {####}',
+                emailStyle: VerificationEmailStyle.CODE,
+                smsMessage: 'Thanks for signing up to our awesome app! Your verification code is {####}',
+            },
+            standardAttributes: {
+                email: {
+                    required: true,
+                    mutable: false,
+                },
+                phoneNumber: {
+                    required: false,
+                    mutable: false,
+                },
+                givenName: {
+                    required: false,
+                    mutable: false,
+                },
+                familyName: {
+                    required: false,
+                    mutable: false,
+                },
+            },
             signInAliases: {
-                username: props.userNameSignInAliases,
+                // username: props.userNameSignInAliases,
                 email: props.emailSignInAliases,
                 phone: props.phoneSignInAliases,
             }
-        });
+        })
+
+        const cert = Certificate.fromCertificateArn(this,
+            'certificateId',
+            props.certificateArn)
+
+        const userPoolDomain = this.userPool.addDomain('UserPoolCustomDomain', {
+            customDomain: {
+                domainName: props.customDomainName,
+                certificate: cert,
+            },
+        })
+
+        // const hostedZone = HostedZone.fromLookup(this, 'HostedZone', {
+        //     domainName: props.rootDomain
+        // });
+        //
+        // new ARecord(this, props.ARecordId, {
+        //     zone: hostedZone,
+        //     recordName: props.subdomain,
+        //     target: RecordTarget.fromAlias(new UserPoolDomainTarget(userPoolDomain)),
+        // });
+
         new CfnOutput(this, 'UserPoolId', {
             value: this.userPool.userPoolId
         })

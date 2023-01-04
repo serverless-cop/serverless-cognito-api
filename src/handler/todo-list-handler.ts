@@ -17,6 +17,11 @@ export async function handler(event: APIGatewayProxyEvent, context: Context):
 
     const result: APIGatewayProxyResult = {
         statusCode: 200,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': '*',
+            'Access-Control-Allow-Methods': '*'
+        },
         body: ''
     }
 

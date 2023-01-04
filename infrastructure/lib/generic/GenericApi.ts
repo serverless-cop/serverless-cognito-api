@@ -6,7 +6,7 @@ import {
     Model,
     RequestValidator,
     RestApi,
-    DomainName, BasePathMapping,
+    DomainName, BasePathMapping, Cors,
 } from "aws-cdk-lib/aws-apigateway";
 import {NodejsFunction} from "aws-cdk-lib/aws-lambda-nodejs";
 import {join} from "path";
@@ -49,7 +49,11 @@ export abstract class GenericApi extends Construct {
 
     protected constructor(scope: Construct, id: string, props?: cdk.StackProps){
         super(scope, id);
-        this.api = new RestApi(this, id)
+        this.api = new RestApi(this, id, {
+            defaultCorsPreflightOptions: {
+                allowOrigins: Cors.ALL_ORIGINS,
+                allowMethods: Cors.ALL_METHODS // this is also the default
+            }})
     }
 
     protected initializeDomainName(props: any){

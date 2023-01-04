@@ -45,7 +45,6 @@ export abstract class GenericApi extends Construct {
     protected functions = new Map<string,NodejsFunction>()
     protected model: Model
     protected requestValidator: RequestValidator
-
     // private docs: GenerateOpenApiSpecProps
 
     protected constructor(scope: Construct, id: string, props?: cdk.StackProps){

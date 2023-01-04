@@ -4,12 +4,18 @@ interface Env {
     env: string | undefined;
     account: string | undefined;
     region: string | undefined;
+    apiDomainCertificateArn: string | undefined;
+    rootDomain: string | undefined;
+    subdomain: string | undefined;
 }
 
 interface AppConfig {
     env: string
     account: string
     region: string
+    apiDomainCertificateArn: string
+    rootDomain: string
+    subdomain: string
 }
 
 const getConfig = (): Env => {
@@ -17,6 +23,9 @@ const getConfig = (): Env => {
         env: configFile.envNameenv ? configFile.envNameenv : 'dev' ,
         account: configFile.account ? configFile.account : 'dev' ,
         region: configFile.region ? configFile.region : 'us-east-1' ,
+        apiDomainCertificateArn: configFile.apiDomainCertificateArn,
+        rootDomain: configFile.rootDomain,
+        subdomain: configFile.subdomain
     };
 };
 

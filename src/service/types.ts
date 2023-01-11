@@ -7,13 +7,23 @@ export interface TodoEntity{
     userId: string
     name: string
     description: string
-    deadline: string
+    reminderDate: string
+    reminderTime: string
+    email: string
+    phone: string
+    emailReminder: boolean
+    phoneReminder: boolean
 }
 export interface TodoCreateParams{
     userId: string
     name: string
     description: string
-    deadline: string
+    reminderDate: string
+    reminderTime: string
+    email: string
+    phone: string
+    emailReminder: boolean
+    phoneReminder: boolean
 }
 
 export type TodoEditParams = TodoEntity

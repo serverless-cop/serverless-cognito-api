@@ -1,5 +1,5 @@
 import {RemovalPolicy, Stack, StackProps} from "aws-cdk-lib";
-import {AttributeType, Table} from "aws-cdk-lib/aws-dynamodb";
+import {AttributeType, StreamViewType, Table} from "aws-cdk-lib/aws-dynamodb";
 import {Effect, IGrantable, PolicyStatement} from "aws-cdk-lib/aws-iam";
 import {Construct} from "constructs";
 import config from "../../config/config";
@@ -8,6 +8,7 @@ export interface GenericTableProps {
     tableName: string
     primaryKey: string
     keyType: AttributeType
+    stream?: StreamViewType
 }
 
 export interface SecondaryIndexProp {
@@ -31,6 +32,7 @@ export class GenericDynamoTable extends Construct {
                 name: this.props.primaryKey,
                 type: AttributeType.STRING
             },
+            stream: props.stream,
             tableName: config.account + '-' + config.env + '-' + this.props.tableName
         })
     }

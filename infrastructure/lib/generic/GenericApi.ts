@@ -52,7 +52,8 @@ export abstract class GenericApi extends Construct {
         this.api = new RestApi(this, id, {
             defaultCorsPreflightOptions: {
                 allowOrigins: Cors.ALL_ORIGINS,
-                allowMethods: Cors.ALL_METHODS // this is also the default
+                allowMethods: Cors.ALL_METHODS,
+                allowHeaders: Cors.DEFAULT_HEADERS
             }})
     }
 

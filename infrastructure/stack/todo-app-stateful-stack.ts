@@ -5,7 +5,7 @@ import {Bucket, HttpMethods} from "aws-cdk-lib/aws-s3";
 import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 import {GenericDynamoTable} from "../lib/generic/GenericDynamoTable";
 import {TodoCognito} from "../lib/construct/todo-cognito";
-import {AttributeType} from "aws-cdk-lib/aws-dynamodb";
+import {AttributeType, StreamViewType} from "aws-cdk-lib/aws-dynamodb";
 
 
 export class TodoAppStatefulStack extends Stack {
@@ -34,6 +34,7 @@ export class TodoAppStatefulStack extends Stack {
         this.todoTable = new GenericDynamoTable(this, 'TodoDynamoDBTable', {
             tableName: 'Todo-' + this.suffix,
             primaryKey: 'id',
+            stream: StreamViewType.NEW_AND_OLD_IMAGES,
             keyType: AttributeType.STRING
         })
         this.todoTable.addSecondaryIndexes({
